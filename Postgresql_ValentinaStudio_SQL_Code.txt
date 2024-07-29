@@ -1,0 +1,611 @@
+CREATE TABLE sweets_data_raw (
+    jahr TEXT,
+    monat TEXT,
+    datum TEXT,
+    business_group TEXT,
+    category TEXT,
+    brand TEXT,
+    kunde TEXT,
+    hersteller TEXT,
+    produkt_id TEXT,
+    produktbeschreibung TEXT,
+    sector TEXT,
+    subsector TEXT,
+    "to" TEXT,
+    usg_pct TEXT,
+    uvg_pct TEXT,
+    upg_pct TEXT,
+    nrr TEXT,
+    nrr_vs_py_pct TEXT,
+    gm_pct TEXT,
+    gm_vs_py_bps TEXT,
+    value_growth_vs_py_pct TEXT,
+    cat_value_growth_vs_py_pct TEXT,
+    vms_pct TEXT,
+    vms_vs_py_bps TEXT,
+    tdp_w_share_pct TEXT,
+    tdp_w_share_vs_py_bps TEXT,
+    promo_share_pct TEXT,
+    promo_share_vs_py_bps TEXT,
+    avg_price_l_kg TEXT,
+    unnötige_spalte_1 TEXT,
+    unnötige_spalte_2 TEXT,
+    unnötige_spalte_3 TEXT,
+    adresse TEXT,
+    validität TEXT
+);
+
+CREATE TABLE sweets_data (
+    jahr INTEGER,
+    monat INTEGER,
+    datum date,
+    business_group TEXT,
+    category TEXT,
+    brand TEXT,
+    kunde TEXT,
+    hersteller TEXT,
+    produkt_id INTEGER,
+    produktbeschreibung TEXT,
+    sector TEXT,
+    subsector TEXT,
+    "to" NUMERIC,
+    usg_pct NUMERIC,
+    uvg_pct NUMERIC,
+    upg_pct NUMERIC,
+    nrr NUMERIC,
+    nrr_vs_py_pct NUMERIC,
+    gm_pct NUMERIC,
+    gm_vs_py_bps NUMERIC,
+    value_growth_vs_py_pct NUMERIC,
+    cat_value_growth_vs_py_pct NUMERIC,
+    vms_pct NUMERIC,
+    vms_vs_py_bps NUMERIC,
+    tdp_w_share_pct NUMERIC,
+    tdp_w_share_vs_py_bps NUMERIC,
+    promo_share_pct NUMERIC,
+    promo_share_vs_py_bps NUMERIC,
+    avg_price_l_kg NUMERIC,
+    unnötige_spalte_1 TEXT,
+    unnötige_spalte_2 TEXT,
+    unnötige_spalte_3 TEXT,
+    adresse TEXT,
+    validität TEXT
+);
+
+INSERT INTO sweets_data (
+    jahr, monat, datum, business_group, category, brand, kunde, hersteller,
+    produkt_id, produktbeschreibung, sector, subsector, "to", usg_pct, uvg_pct, upg_pct,
+    nrr, nrr_vs_py_pct, gm_pct, gm_vs_py_bps, value_growth_vs_py_pct, cat_value_growth_vs_py_pct,
+    vms_pct, vms_vs_py_bps, tdp_w_share_pct, tdp_w_share_vs_py_bps, promo_share_pct,
+    promo_share_vs_py_bps, avg_price_l_kg, unnötige_spalte_1, unnötige_spalte_2,
+    unnötige_spalte_3, adresse, validität
+)
+SELECT
+    CAST(jahr AS INTEGER),
+    CAST(monat AS INTEGER),
+    CAST(datum AS DATE),
+    business_group,
+    category,
+    brand,
+    kunde,
+    hersteller,
+    CAST(produkt_id AS INTEGER),
+    produktbeschreibung,
+    sector,
+    subsector,
+    CAST("to" AS NUMERIC),
+    CAST(usg_pct AS NUMERIC),
+    CAST(uvg_pct AS NUMERIC),
+    CAST(upg_pct AS NUMERIC),
+    CAST(nrr AS NUMERIC),
+    CAST(nrr_vs_py_pct AS NUMERIC),
+    CAST(gm_pct AS NUMERIC),
+       CAST(gm_vs_py_bps AS NUMERIC),
+       CAST(value_growth_vs_py_pct AS NUMERIC),
+       CAST(cat_value_growth_vs_py_pct AS NUMERIC),
+       CAST(vms_pct AS NUMERIC),
+       CAST(vms_vs_py_bps AS NUMERIC),
+       CAST(tdp_w_share_pct AS NUMERIC),
+       CAST(tdp_w_share_vs_py_bps AS NUMERIC),
+       CAST(promo_share_pct AS NUMERIC),
+       CAST(promo_share_vs_py_bps AS NUMERIC),
+       CAST(avg_price_l_kg AS NUMERIC),
+       unnötige_spalte_1,
+       unnötige_spalte_2,
+       unnötige_spalte_3,
+       adresse,
+       validität
+   FROM sweets_data_raw;
+   
+-- stage2 Tabelle erzeugen, in der wir Datentransformation und Bereinigung vornehmen, bevor wir die Daten in unsere Tabelle sweets_data übertragen
+
+CREATE TABLE sweets_data_raw_stage2 (
+    jahr TEXT,
+    monat TEXT,
+    datum TEXT,
+    business_group TEXT,
+    category TEXT,
+    brand TEXT,
+    kunde TEXT,
+    hersteller TEXT,
+    produkt_id TEXT,
+    produktbeschreibung TEXT,
+    sector TEXT,
+    subsector TEXT,
+    "to" TEXT,
+    usg_pct TEXT,
+    uvg_pct TEXT,
+    upg_pct TEXT,
+    nrr TEXT,
+    nrr_vs_py_pct TEXT,
+    gm_pct TEXT,
+    gm_vs_py_bps TEXT,
+    value_growth_vs_py_pct TEXT,
+    cat_value_growth_vs_py_pct TEXT,
+    vms_pct TEXT,
+    vms_vs_py_bps TEXT,
+    tdp_w_share_pct TEXT,
+    tdp_w_share_vs_py_bps TEXT,
+    promo_share_pct TEXT,
+    promo_share_vs_py_bps TEXT,
+    avg_price_l_kg TEXT,
+    unnötige_spalte_1 TEXT,
+    unnötige_spalte_2 TEXT,
+    unnötige_spalte_3 TEXT,
+    adresse TEXT,
+    validität TEXT
+);
+
+INSERT INTO sweets_data_raw_stage2 (
+    jahr, monat, datum, business_group, category, brand, kunde, hersteller, 
+    produkt_id, produktbeschreibung, sector, subsector, "to", usg_pct, 
+    uvg_pct, upg_pct, nrr, nrr_vs_py_pct, gm_pct, gm_vs_py_bps, 
+    value_growth_vs_py_pct, cat_value_growth_vs_py_pct, vms_pct, 
+    vms_vs_py_bps, tdp_w_share_pct, tdp_w_share_vs_py_bps, promo_share_pct, 
+    promo_share_vs_py_bps, avg_price_l_kg, unnötige_spalte_1, unnötige_spalte_2, 
+    unnötige_spalte_3, adresse, validität
+)
+SELECT
+    jahr, monat, datum, business_group, category, brand, kunde, hersteller, 
+    produkt_id, produktbeschreibung, sector, subsector, "to", usg_pct, 
+    uvg_pct, upg_pct, nrr, nrr_vs_py_pct, gm_pct, gm_vs_py_bps, 
+    value_growth_vs_py_pct, cat_value_growth_vs_py_pct, vms_pct, 
+    vms_vs_py_bps, tdp_w_share_pct, tdp_w_share_vs_py_bps, promo_share_pct, 
+    promo_share_vs_py_bps, avg_price_l_kg, unnötige_spalte_1, unnötige_spalte_2, 
+    unnötige_spalte_3, adresse, validität
+FROM sweets_data_raw;
+
+SELECT *
+FROM sweets_data_raw_stage2
+WHERE avg_price_l_kg ILIKE '%unnötige spalte 1%';
+
+-- Erstellen einer Sicht, um die zu löschenden Daten zu überprüfen
+CREATE VIEW sweets_data_to_delete AS
+SELECT *
+FROM sweets_data_raw_stage2
+WHERE LOWER(avg_price_l_kg) = LOWER('unnötige spalte 1');
+
+SELECT *
+FROM sweets_data_to_delete
+WHERE avg_price_l_kg ILIKE '%unnötige spalte 1%';
+
+-- Löschen der Daten
+DELETE FROM sweets_data_raw_stage2
+WHERE LOWER(avg_price_l_kg) = LOWER('unnötige spalte 1');
+
+--Überprüfen, ob die Zeilen gelöscht wurden
+SELECT COUNT(*)
+FROM sweets_data_raw_stage2
+WHERE avg_price_l_kg ILIKE '%unnötige spalte 1%';
+
+--Datumsspalte anschauen
+SELECT datum
+FROM sweets_data_raw_stage2;
+
+-- Erstellen einer temporären Tabelle
+CREATE TEMP TABLE sweets_data_temp AS
+SELECT *
+FROM sweets_data_raw_stage2
+LIMIT 100;  -- Nur 100 Zeilen für Testzwecke, nach Bedarf anpassen
+
+-- Überprüfen der Testdaten
+SELECT * FROM sweets_data_temp;
+
+-- Entfernen von '00' aus den Datumsangaben in der temporären Tabelle
+UPDATE sweets_data_temp
+SET datum = 
+    CASE 
+        WHEN datum ~ '^\d{4}/\d{2}/00\d{2}$' THEN 
+            SUBSTRING(datum, 1, 7) || SUBSTRING(datum, 9, 2)
+        WHEN datum ~ '^\d{4}\.\d{2}\.00\d{2}$' THEN 
+            SUBSTRING(datum, 1, 7) || SUBSTRING(datum, 9, 2)
+        WHEN datum ~ '^\d{4}-\d{2}-00\d{2}$' THEN 
+            SUBSTRING(datum, 1, 7) || SUBSTRING(datum, 9, 2)
+        ELSE datum
+    END
+WHERE datum ~ '^\d{4}/\d{2}/00\d{2}$' 
+   OR datum ~ '^\d{4}\.\d{2}\.00\d{2}$' 
+   OR datum ~ '^\d{4}-\d{2}-00\d{2}$';
+   
+ -- Überprüfen der Änderungen in der temporären Tabelle
+SELECT * FROM sweets_data_temp WHERE datum ~ '^\d{4}/\d{2}/00\d{2}$' OR datum ~ '^\d{4}\.\d{2}\.00\d{2}$' OR datum ~ '^\d{4}-\d{2}-00\d{2}$';  
+
+SELECT * FROM sweets_data_temp;
+
+-- Entfernen von '00' aus den Datumsangaben und Ersetzen durch '/01,.01,-01' 
+UPDATE sweets_data_temp
+SET datum = 
+    CASE 
+        WHEN datum ~ '^\d{4}/\d{2}00$' THEN SUBSTRING(datum, 1, 7) || '/01'
+        WHEN datum ~ '^\d{4}\.\d{2}00$' THEN SUBSTRING(datum, 1, 7) || '.01'
+        WHEN datum ~ '^\d{4}-\d{2}00$' THEN SUBSTRING(datum, 1, 7) || '-01'
+        ELSE datum
+    END
+WHERE datum ~ '^\d{4}/\d{2}00$' 
+    OR datum ~ '^\d{4}\.\d{2}00$' 
+    OR datum ~ '^\d{4}-\d{2}00$';
+    
+    -- Überprüfen auf ungültige Datumsangaben, die nicht dem erwarteten Format entsprechen
+SELECT datum
+FROM sweets_data_temp
+WHERE NOT (
+    datum ~ '^\d{4}-\d{2}-\d{2}$' OR  -- ISO-Format: YYYY-MM-DD
+    datum ~ '^\d{4}/\d{2}/\d{2}$' OR  -- US-Format: YYYY/MM/DD
+    datum ~ '^\d{4}\.\d{2}\.\d{2}$'   -- EU-Format: YYYY.MM.DD
+);
+
+SELECT * FROM sweets_data_temp
+
+-- Entfernen von '00' aus den Datumsangaben in der staging tabelle
+UPDATE sweets_data_raw_stage2
+SET datum = 
+    CASE 
+        WHEN datum ~ '^\d{4}/\d{2}/00\d{2}$' THEN 
+            SUBSTRING(datum, 1, 7) || SUBSTRING(datum, 9, 2)
+        WHEN datum ~ '^\d{4}\.\d{2}\.00\d{2}$' THEN 
+            SUBSTRING(datum, 1, 7) || SUBSTRING(datum, 9, 2)
+        WHEN datum ~ '^\d{4}-\d{2}-00\d{2}$' THEN 
+            SUBSTRING(datum, 1, 7) || SUBSTRING(datum, 9, 2)
+        ELSE datum
+    END
+WHERE datum ~ '^\d{4}/\d{2}/00\d{2}$' 
+   OR datum ~ '^\d{4}\.\d{2}\.00\d{2}$' 
+   OR datum ~ '^\d{4}-\d{2}-00\d{2}$';
+
+-- Entfernen von '00' aus den Datumsangaben und Ersetzen durch '/01,.01,-01' 
+UPDATE sweets_data_raw_stage2
+SET datum = 
+    CASE 
+        WHEN datum ~ '^\d{4}/\d{2}00$' THEN SUBSTRING(datum, 1, 7) || '/01'
+        WHEN datum ~ '^\d{4}\.\d{2}00$' THEN SUBSTRING(datum, 1, 7) || '.01'
+        WHEN datum ~ '^\d{4}-\d{2}00$' THEN SUBSTRING(datum, 1, 7) || '-01'
+        ELSE datum
+    END
+WHERE datum ~ '^\d{4}/\d{2}00$' 
+    OR datum ~ '^\d{4}\.\d{2}00$' 
+    OR datum ~ '^\d{4}-\d{2}00$';
+  
+ DROP TABLE IF EXISTS sweets_data_temp;
+ 
+ 
+-- Erstellen einer temporären Tabelle zum Testen
+CREATE TEMP TABLE sweets_data_temp AS
+SELECT * FROM sweets_data_raw_stage2;
+ 
+-- Konvertieren der Datumsangaben in der temporären Tabelle
+UPDATE sweets_data_temp
+SET datum = 
+    CASE 
+        WHEN datum ~ '^\d{4}/\d{2}/\d{2}$' THEN TO_CHAR(TO_DATE(datum, 'YYYY/MM/DD'), 'YYYY-MM-DD')
+        WHEN datum ~ '^\d{4}\.\d{2}\.\d{2}$' THEN TO_CHAR(TO_DATE(datum, 'YYYY.MM.DD'), 'YYYY-MM-DD')
+        WHEN datum ~ '^\d{4}-\d{2}-\d{2}$' THEN TO_CHAR(TO_DATE(datum, 'YYYY-MM-DD'), 'YYYY-MM-DD')
+        ELSE NULL  -- Setzt ungültige Datumsangaben auf NULL
+    END;
+
+-- Anzeigen der korrigierten Daten
+SELECT datum
+FROM sweets_data_temp
+WHERE datum IS NOT NULL;
+
+UPDATE sweets_data_raw_stage2
+SET datum = 
+    CASE 
+        WHEN datum ~ '^\d{4}/\d{2}/\d{2}$' THEN TO_CHAR(TO_DATE(datum, 'YYYY/MM/DD'), 'YYYY-MM-DD')
+        WHEN datum ~ '^\d{4}\.\d{2}\.\d{2}$' THEN TO_CHAR(TO_DATE(datum, 'YYYY.MM.DD'), 'YYYY-MM-DD')
+        WHEN datum ~ '^\d{4}-\d{2}-\d{2}$' THEN TO_CHAR(TO_DATE(datum, 'YYYY-MM-DD'), 'YYYY-MM-DD')
+        ELSE NULL  -- Setzt ungültige Datumsangaben auf NULL
+    END;
+    
+SELECT datum
+FROM sweets_data_raw_stage2
+WHERE datum IS NULL;
+
+DROP TABLE IF EXISTS sweets_data_temp;
+
+-- Löschen von Daten die keinen Sinn ergeben
+-- Erstellen einer temporären Tabelle für die Bereinigung
+CREATE TEMP TABLE sweets_data_clean AS
+SELECT *
+FROM sweets_data_raw_stage2;
+
+SELECT *
+FROM sweets_data_raw_stage2
+LIMIT 100;
+
+-- Anzeigen von Datensätzen mit negativen Werten bei bestimmten Kennzahlen oder fehlenden Werten in avg_price_l_kg
+SELECT *
+FROM sweets_data_clean
+WHERE promo_share_pct < 0
+   OR vms_pct < 0
+   OR tdp_w_share_pct < 0
+   OR avg_price_l_kg < 0
+   OR avg_price_l_kg IS NULL OR avg_price_l_kg = NULL;
+   
+ALTER TABLE sweets_data_clean
+ALTER COLUMN promo_share_pct TYPE NUMERIC USING promo_share_pct::NUMERIC,
+ALTER COLUMN nrr TYPE NUMERIC USING nrr::NUMERIC,
+ALTER COLUMN tdp_w_share_pct TYPE NUMERIC USING tdp_w_share_pct::NUMERIC,
+ALTER COLUMN avg_price_l_kg TYPE NUMERIC USING avg_price_l_kg::NUMERIC,
+ALTER COLUMN "to" TYPE NUMERIC USING "to"::NUMERIC,
+ALTER COLUMN usg_pct TYPE NUMERIC USING usg_pct::NUMERIC,
+ALTER COLUMN uvg_pct TYPE NUMERIC USING uvg_pct::NUMERIC,
+ALTER COLUMN upg_pct TYPE NUMERIC USING upg_pct::NUMERIC,
+ALTER COLUMN nrr_vs_py_pct TYPE NUMERIC USING nrr_vs_py_pct::NUMERIC,
+ALTER COLUMN gm_pct TYPE NUMERIC USING gm_pct::NUMERIC,
+ALTER COLUMN gm_vs_py_bps TYPE NUMERIC USING gm_vs_py_bps::NUMERIC,
+ALTER COLUMN value_growth_vs_py_pct TYPE NUMERIC USING value_growth_vs_py_pct::NUMERIC,
+ALTER COLUMN cat_value_growth_vs_py_pct TYPE NUMERIC USING cat_value_growth_vs_py_pct::NUMERIC,
+ALTER COLUMN vms_pct TYPE NUMERIC USING vms_pct::NUMERIC,
+ALTER COLUMN vms_vs_py_bps TYPE NUMERIC USING vms_vs_py_bps::NUMERIC,
+ALTER COLUMN tdp_w_share_vs_py_bps TYPE NUMERIC USING tdp_w_share_vs_py_bps::NUMERIC,
+ALTER COLUMN promo_share_vs_py_bps TYPE NUMERIC USING promo_share_vs_py_bps::NUMERIC,
+ALTER COLUMN produkt_id TYPE INTEGER USING produkt_id::INTEGER;
+
+-- Anzeigen von Datensätzen mit negativen Werten bei bestimmten Kennzahlen oder fehlenden Werten in avg_price_l_kg
+SELECT *
+FROM sweets_data_clean
+WHERE promo_share_pct < 0
+   OR vms_pct < 0
+   OR tdp_w_share_pct < 0
+   OR avg_price_l_kg < 0
+   OR avg_price_l_kg IS NULL OR avg_price_l_kg = NULL;
+   
+ -- Entfernen von negativen Werten bei Kennzahlen, wo diese keinen Sinn ergeben
+DELETE FROM sweets_data_clean
+WHERE promo_share_pct < 0
+   OR vms_pct < 0
+   OR tdp_w_share_pct < 0
+   OR avg_price_l_kg < 0
+   OR avg_price_l_kg IS NULL OR avg_price_l_kg = NULL;
+   
+-- Überprüfen der Anzahl der verbleibenden Zeilen
+SELECT COUNT(*) AS remaining_rows FROM sweets_data_clean;
+
+ALTER TABLE sweets_data_raw_stage2
+ALTER COLUMN promo_share_pct TYPE NUMERIC USING promo_share_pct::NUMERIC,
+ALTER COLUMN nrr TYPE NUMERIC USING nrr::NUMERIC,
+ALTER COLUMN tdp_w_share_pct TYPE NUMERIC USING tdp_w_share_pct::NUMERIC,
+ALTER COLUMN avg_price_l_kg TYPE NUMERIC USING avg_price_l_kg::NUMERIC,
+ALTER COLUMN "to" TYPE NUMERIC USING "to"::NUMERIC,
+ALTER COLUMN usg_pct TYPE NUMERIC USING usg_pct::NUMERIC,
+ALTER COLUMN uvg_pct TYPE NUMERIC USING uvg_pct::NUMERIC,
+ALTER COLUMN upg_pct TYPE NUMERIC USING upg_pct::NUMERIC,
+ALTER COLUMN nrr_vs_py_pct TYPE NUMERIC USING nrr_vs_py_pct::NUMERIC,
+ALTER COLUMN gm_pct TYPE NUMERIC USING gm_pct::NUMERIC,
+ALTER COLUMN gm_vs_py_bps TYPE NUMERIC USING gm_vs_py_bps::NUMERIC,
+ALTER COLUMN value_growth_vs_py_pct TYPE NUMERIC USING value_growth_vs_py_pct::NUMERIC,
+ALTER COLUMN cat_value_growth_vs_py_pct TYPE NUMERIC USING cat_value_growth_vs_py_pct::NUMERIC,
+ALTER COLUMN vms_pct TYPE NUMERIC USING vms_pct::NUMERIC,
+ALTER COLUMN vms_vs_py_bps TYPE NUMERIC USING vms_vs_py_bps::NUMERIC,
+ALTER COLUMN tdp_w_share_vs_py_bps TYPE NUMERIC USING tdp_w_share_vs_py_bps::NUMERIC,
+ALTER COLUMN promo_share_vs_py_bps TYPE NUMERIC USING promo_share_vs_py_bps::NUMERIC,
+ALTER COLUMN produkt_id TYPE INTEGER USING produkt_id::INTEGER;
+
+-- Entfernen von negativen Werten bei Kennzahlen, wo diese keinen Sinn ergeben
+DELETE FROM sweets_data_raw_stage2
+WHERE promo_share_pct < 0
+   OR vms_pct < 0
+   OR tdp_w_share_pct < 0
+   OR avg_price_l_kg < 0
+   OR avg_price_l_kg IS NULL OR avg_price_l_kg = NULL;
+   
+-- Überprüfen der Anzahl der verbleibenden Zeilen
+SELECT COUNT(*) AS remaining_rows FROM sweets_data_raw_stage2;
+
+-- DUPLIKATE
+-- Erstellen einer temporären Tabelle, um Duplikate zu identifizieren (Ändere ab hier sweets_data in sweets_data_raw_stage2)
+CREATE TEMP TABLE temp_duplicates AS
+SELECT *,
+       ROW_NUMBER() OVER (PARTITION BY jahr, monat, datum, business_group, category, brand, kunde, hersteller, produkt_id, produktbeschreibung, sector, subsector, "to", usg_pct, uvg_pct, upg_pct, nrr 
+                    ORDER BY jahr, monat, datum) AS rnum
+FROM sweets_data_raw_stage2;
+
+-- Abfragen der Duplikate
+SELECT *
+FROM temp_duplicates
+WHERE rnum > 1;
+
+-- Datensatz als Duplikat überprüfen 
+SELECT *
+FROM temp_duplicates
+WHERE jahr = '2021'
+  AND monat = '1'
+  AND business_group = 'Süßwaren'
+  AND category = 'Bonbons'
+  AND brand = 'Cola-Bonbons'
+  AND kunde = 'Kunde 20'
+  AND hersteller = 'Sweet Treats Inc'
+  AND produkt_id = 73506;
+  
+DELETE FROM temp_duplicates
+WHERE rnum > 1;
+
+SELECT *
+FROM temp_duplicates
+WHERE rnum > 1;
+
+-- Hinzufügen einer temporären Spalte, um Duplikate zu markieren
+ALTER TABLE sweets_data_raw_stage2 ADD COLUMN rnum INT;
+
+UPDATE sweets_data_raw_stage2
+SET rnum = sub.rnum
+FROM (
+    SELECT ctid,
+           ROW_NUMBER() OVER (PARTITION BY jahr, monat, datum, business_group, category, brand, kunde, hersteller, produkt_id, produktbeschreibung, sector, subsector, "to", usg_pct, uvg_pct, upg_pct, nrr 
+                              ORDER BY jahr, monat, datum) AS rnum
+    FROM sweets_data_raw_stage2
+) AS sub
+WHERE sweets_data_raw_stage2.ctid = sub.ctid;
+
+-- Anzeigen der Duplikate
+SELECT *
+FROM sweets_data_raw_stage2
+WHERE rnum > 1;
+
+SELECT *
+FROM sweets_data_raw_stage2
+WHERE jahr = '2021'
+  AND monat = '1'
+  AND business_group = 'Süßwaren'
+  AND category = 'Bonbons'
+  AND brand = 'Cola-Bonbons'
+  AND kunde = 'Kunde 20'
+  AND hersteller = 'Sweet Treats Inc'
+  AND produkt_id = 73506;
+  
+-- Löschen der Duplikate
+DELETE FROM sweets_data_raw_stage2
+WHERE rnum > 1;
+
+-- Überprüfen, ob die Duplikate gelöscht wurden
+SELECT COUNT(*)
+FROM sweets_data_raw_stage2
+WHERE rnum > 1;
+
+-- Entfernen der temporären Spalte rnum
+ALTER TABLE sweets_data_raw_stage2 DROP COLUMN rnum;
+
+DROP TABLE temp_duplicates;
+
+SELECT *
+FROM sweets_data_raw_stage2
+Limit 10;
+
+--Adressen
+-- Erstellen einer temporären Tabelle mit Beispieladressen aus der Haupttabelle
+CREATE TEMP TABLE temp_addresses AS
+SELECT adresse
+FROM sweets_data_raw_stage2
+LIMIT 10;  -- Anpassen der Anzahl nach Bedarf, um genügend Beispiele zu haben
+
+-- Überprüfen der Adressstruktur in der temporären Tabelle
+SELECT * FROM temp_addresses;
+
+-- Hinzufügen neuer Spalten für die aufgeteilten Adresskomponenten
+ALTER TABLE temp_addresses
+ADD COLUMN strasse TEXT,
+ADD COLUMN hausnummer TEXT,
+ADD COLUMN stadt TEXT,
+ADD COLUMN postleitzahl TEXT,
+ADD COLUMN land TEXT;
+
+-- Aufteilen der Adressdaten in ihre Komponenten und Auffüllen der neuen Spalten
+UPDATE temp_addresses
+SET strasse = TRIM(SPLIT_PART(adresse, ' ', 1)),
+    hausnummer = TRIM(SPLIT_PART(SPLIT_PART(adresse, ' ', 2), ',', 1)),
+    stadt = TRIM(SPLIT_PART(adresse, ',', 2)),
+    postleitzahl = TRIM(SPLIT_PART(adresse, ',', 3)),
+    land = TRIM(SPLIT_PART(adresse, ',', 4));
+    
+SELECT * FROM temp_addresses;
+
+ALTER TABLE sweets_data_raw_stage2
+ADD COLUMN strasse TEXT,
+ADD COLUMN hausnummer TEXT,
+ADD COLUMN stadt TEXT,
+ADD COLUMN postleitzahl TEXT,
+ADD COLUMN land TEXT;
+
+UPDATE sweets_data_raw_stage2
+SET strasse = TRIM(SPLIT_PART(adresse, ' ', 1)),
+    hausnummer = TRIM(SPLIT_PART(SPLIT_PART(adresse, ' ', 2), ',', 1)),
+    stadt = TRIM(SPLIT_PART(adresse, ',', 2)),
+    postleitzahl = TRIM(SPLIT_PART(adresse, ',', 3)),
+    land = TRIM(SPLIT_PART(adresse, ',', 4));
+    
+ -- Überprüfen der aufgeteilten Adresskomponenten in der Haupttabelle
+SELECT strasse, hausnummer, stadt, postleitzahl, land
+FROM sweets_data_raw_stage2
+LIMIT 10;
+
+ALTER TABLE sweets_data
+ADD COLUMN strasse TEXT,
+ADD COLUMN hausnummer TEXT,
+ADD COLUMN stadt TEXT,
+ADD COLUMN postleitzahl TEXT,
+ADD COLUMN land TEXT;
+
+-- Einfügen der bereinigten Daten einschließlich der neuen Adressspalten in die Haupttabelle
+INSERT INTO sweets_data (
+    jahr, monat, datum, business_group, category, brand, kunde, hersteller,
+    produkt_id, produktbeschreibung, sector, subsector, "to", usg_pct, uvg_pct, upg_pct,
+    nrr, nrr_vs_py_pct, gm_pct, gm_vs_py_bps, value_growth_vs_py_pct, cat_value_growth_vs_py_pct,
+    vms_pct, vms_vs_py_bps, tdp_w_share_pct, tdp_w_share_vs_py_bps, promo_share_pct,
+    promo_share_vs_py_bps, avg_price_l_kg, unnötige_spalte_1, unnötige_spalte_2,
+    unnötige_spalte_3, adresse, validität, strasse, hausnummer, stadt, postleitzahl, land
+)
+SELECT
+    CAST(jahr AS INTEGER),
+    CAST(monat AS INTEGER),
+    CAST(datum AS DATE),
+    business_group,
+    category,
+    brand,
+    kunde,
+    hersteller,
+    CAST(produkt_id AS INTEGER),
+    produktbeschreibung,
+    sector,
+    subsector,
+    CAST("to" AS NUMERIC),
+    CAST(usg_pct AS NUMERIC),
+    CAST(uvg_pct AS NUMERIC),
+    CAST(upg_pct AS NUMERIC),
+    CAST(nrr AS NUMERIC),
+    CAST(nrr_vs_py_pct AS NUMERIC),
+    CAST(gm_pct AS NUMERIC),
+    CAST(gm_vs_py_bps AS NUMERIC),
+    CAST(value_growth_vs_py_pct AS NUMERIC),
+    CAST(cat_value_growth_vs_py_pct AS NUMERIC),
+    CAST(vms_pct AS NUMERIC),
+    CAST(vms_vs_py_bps AS NUMERIC),
+    CAST(tdp_w_share_pct AS NUMERIC),
+    CAST(tdp_w_share_vs_py_bps AS NUMERIC),
+    CAST(promo_share_pct AS NUMERIC),
+    CAST(promo_share_vs_py_bps AS NUMERIC),
+    CAST(avg_price_l_kg AS NUMERIC),
+    unnötige_spalte_1,
+    unnötige_spalte_2,
+    unnötige_spalte_3,
+    adresse,
+    validität,
+    strasse,
+    hausnummer,
+    stadt,
+    postleitzahl,
+    land
+FROM sweets_data_raw_stage2;
+
+SELECT *
+FROM sweets_data;
+
+ALTER TABLE sweets_data
+DROP COLUMN unnötige_spalte_1,
+DROP COLUMN unnötige_spalte_2,
+DROP COLUMN unnötige_spalte_3,
+DROP adresse;
+
+-- Finaler Check
+SELECT * 
+FROM sweets_data
+LIMIT 10;
