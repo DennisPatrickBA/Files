@@ -1,0 +1,164 @@
+SELECT * FROM sweets_data;
+
+UPDATE sweets_data
+SET 
+    "to" = ROUND("to", 2),
+    usg_pct = ROUND(usg_pct, 2),
+    uvg_pct = ROUND(uvg_pct, 2),
+    upg_pct = ROUND(upg_pct, 2),
+    nrr = ROUND(nrr, 2),
+    nrr_vs_py_pct = ROUND(nrr_vs_py_pct, 2),
+    gm_pct = ROUND(gm_pct, 2),
+    gm_vs_py_bps = ROUND(gm_vs_py_bps, 2),
+    value_growth_vs_py_pct = ROUND(value_growth_vs_py_pct, 2),
+    cat_value_growth_vs_py_pct = ROUND(cat_value_growth_vs_py_pct, 2),
+    vms_pct = ROUND(vms_pct, 2),
+    vms_vs_py_bps = ROUND(vms_vs_py_bps, 2),
+    tdp_w_share_pct = ROUND(tdp_w_share_pct, 2),
+    tdp_w_share_vs_py_bps = ROUND(tdp_w_share_vs_py_bps, 2),
+    promo_share_pct = ROUND(promo_share_pct, 2),
+    promo_share_vs_py_bps = ROUND(promo_share_vs_py_bps, 2),
+    avg_price_l_kg = ROUND(avg_price_l_kg, 2);
+
+
+SELECT business_group, hersteller, SUM("to") AS total_revenue
+FROM sweets_data
+GROUP BY business_group, hersteller
+ORDER BY total_revenue DESC;
+
+SELECT category, hersteller, SUM("to") AS total_revenue
+FROM sweets_data
+GROUP BY category, hersteller
+ORDER BY total_revenue DESC;
+
+SELECT hersteller, SUM("to") AS total_revenue
+FROM sweets_data
+GROUP BY hersteller
+ORDER BY total_revenue DESC
+LIMIT 3;
+
+SELECT hersteller, brand, SUM("to") AS total_revenue
+FROM sweets_data
+GROUP BY hersteller, brand
+ORDER BY total_revenue DESC
+LIMIT 10;
+
+SELECT hersteller, category, SUM("to") AS total_revenue
+FROM sweets_data
+GROUP BY hersteller, category
+ORDER BY total_revenue DESC
+LIMIT 10;
+
+SELECT jahr, hersteller, SUM("to") AS total_revenue
+FROM sweets_data
+GROUP BY jahr, hersteller
+ORDER BY jahr, total_revenue DESC;
+
+SELECT monat, hersteller, SUM("to") AS total_revenue
+FROM sweets_data
+GROUP BY monat, hersteller
+ORDER BY monat, total_revenue DESC;
+
+SELECT jahr, monat, hersteller, SUM("to") AS total_revenue
+FROM sweets_data
+GROUP BY jahr, monat, hersteller
+ORDER BY jahr, monat, total_revenue DESC;
+
+SELECT category, hersteller, vms_pct, "to"
+FROM sweets_data
+WHERE vms_pct > 100 OR vms_pct = 0;
+
+DELETE FROM sweets_data
+WHERE vms_pct > 100 OR vms_pct = 0;
+
+SELECT category, SUM(avg_vms) AS sum_of_avg_vms
+FROM (
+    Select category, hersteller, AVG(vms_pct) AS avg_vms
+    FROM sweets_data
+    WHERE category = 'Schokolade'
+    GROUP BY category, hersteller
+) AS avg_vms_per_hersteller
+GROUP BY category;
+
+SELECT category, hersteller, AVG(vms_pct) AS avg_vms
+FROM sweets_data
+GROUP BY category, hersteller
+ORDER BY avg_vms DESC;
+
+SELECT hersteller, AVG(vms_pct) AS avg_vms
+FROM sweets_data
+GROUP BY hersteller
+ORDER BY avg_vms DESC;
+
+SELECT category, hersteller, AVG(usg_pct) AS avg_usg, AVG(uvg_pct) AS avg_uvg, AVG(upg_pct) AS avg_upg,(AVG(uvg_pct) + AVG(upg_pct)) AS sum_uvg_upg
+FROM sweets_data
+GROUP BY category, hersteller
+ORDER BY avg_usg DESC;
+
+SELECT hersteller, AVG(usg_pct) AS avg_usg, AVG(uvg_pct) AS avg_uvg, AVG(upg_pct) AS avg_upg
+FROM sweets_data
+GROUP BY hersteller
+ORDER BY avg_usg DESC;
+
+SELECT kunde, hersteller, SUM("to") AS total_revenue
+FROM sweets_data
+GROUP BY kunde, hersteller
+ORDER BY total_revenue DESC
+LIMIT 10;
+
+SELECT kunde, SUM("to") AS total_revenue
+FROM sweets_data
+GROUP BY kunde
+ORDER BY total_revenue DESC
+LIMIT 10;
+
+SELECT category, hersteller, AVG(promo_share_pct) AS avg_promo_share
+FROM sweets_data
+GROUP BY category, hersteller
+ORDER BY avg_promo_share DESC;
+
+SELECT category, hersteller, AVG(promo_share_pct) AS avg_promo_share, SUM("to") AS total_revenue
+FROM sweets_data
+GROUP BY category, hersteller
+ORDER BY total_revenue DESC;
+
+SELECT category, hersteller, AVG(tdp_w_share_pct) AS avg_tdp_share
+FROM sweets_data
+GROUP BY category, hersteller
+ORDER BY avg_tdp_share DESC;
+
+WITH revenue_per_month AS (
+    SELECT hersteller,
+           DATE_TRUNC('month', datum) AS monat,
+           SUM("to") AS monthly_revenue
+    FROM sweets_data
+    GROUP BY hersteller, DATE_TRUNC('month', datum)
+),
+mat_calculation AS (
+    SELECT hersteller, monat,
+           SUM(monthly_revenue) OVER (PARTITION BY hersteller ORDER BY monat ROWS BETWEEN 11 PRECEDING AND CURRENT ROW) AS mat_revenue
+    FROM revenue_per_month
+)
+SELECT hersteller,
+       TO_CHAR(monat, 'YYYY-MM') AS monat,
+       mat_revenue
+FROM mat_calculation
+ORDER BY hersteller, monat;
+
+WITH revenue_per_month AS (
+    SELECT hersteller,
+           DATE_TRUNC('month', datum) AS monat,
+           SUM("to") AS monthly_revenue
+    FROM sweets_data
+    GROUP BY hersteller, DATE_TRUNC('month', datum)
+),
+mat_calculation AS (
+    SELECT hersteller, monat,
+           SUM(monthly_revenue) OVER (PARTITION BY hersteller ORDER BY monat ROWS BETWEEN 11 PRECEDING AND CURRENT ROW) AS mat_revenue
+    FROM revenue_per_month
+)
+SELECT hersteller,
+       TO_CHAR(monat, 'YYYY-MM') AS monat,
+       mat_revenue
+FROM mat_calculation
+ORDER BY hersteller, monat;
