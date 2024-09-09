@@ -1,0 +1,120 @@
+% Bruttomarge = AVERAGE('public sweets_data'[gm_pct]) / 100
+
+% Bruttomarge PY = CALCULATE(AVERAGE('public sweets_data'[gm_pct]), SAMEPERIODLASTYEAR('Date'[Date]))/100
+
+% Bruttomarge Wachstum vs PY = 
+IF(
+    ISBLANK([% Bruttomarge PY]), 
+    BLANK(), 
+    ([% Bruttomarge] - [% Bruttomarge PY])
+)
+
+% UPG(g) = 
+DIVIDE(
+    SUMX('public sweets_data', 'public sweets_data'[to] * 'public sweets_data'[upg_pct]),
+    SUM('public sweets_data'[to])
+) / 100
+
+% USG PY = 
+CALCULATE(
+    [% USG(g)], 
+    SAMEPERIODLASTYEAR('Date'[Date])
+)
+
+% USG Wachstum vs PY = 
+IF(
+    ISBLANK([% USG PY]), 
+    BLANK(), 
+    ([% USG(g)] - [% USG PY])
+)
+
+% USG(g) = DIVIDE(
+    SUMX('public sweets_data', 'public sweets_data'[to] * 'public sweets_data'[usg_pct]),
+    SUM('public sweets_data'[to])
+) / 100
+
+% UVG(g) = 
+DIVIDE(
+    SUMX('public sweets_data', 'public sweets_data'[to] * 'public sweets_data'[uvg_pct]),
+    SUM('public sweets_data'[to])
+) / 100
+
+% VMS = 
+DIVIDE(
+    SUM('public sweets_data'[vms_pct]),
+    [% VMS_Gesamt]
+)
+
+% VMS PY = 
+CALCULATE(
+    [% VMS], 
+    SAMEPERIODLASTYEAR('Date'[Date])
+)
+
+% VMS Wachstum vs PY = 
+IF(
+    ISBLANK([% VMS PY]), 
+    BLANK(), 
+    ([% VMS] - [% VMS PY])
+)
+
+% VMS_Gesamt = 
+CALCULATE(
+    SUM('public sweets_data'[vms_pct]),
+    REMOVEFILTERS('public sweets_data'[Hersteller])
+)
+
+% Wachstum Vorjahr = 
+DIVIDE(
+    SUM('public sweets_data'[to]) - 
+    CALCULATE(
+        SUM('public sweets_data'[to]),
+        SAMEPERIODLASTYEAR('Date'[Date])
+    ),
+    CALCULATE(
+        SUM('public sweets_data'[to]),
+        SAMEPERIODLASTYEAR('Date'[Date])
+    )
+)
+
+€ Umsatz = 
+SUM ('public sweets_data'[to])
+
+€ Umsatz (ausgewählte Periodizität) = 
+SWITCH(
+    SELECTEDVALUE('Periodizität'[Periode]),
+    "Monat", [€ Umsatz],
+    "3 Monate Rollierend", [€ Umsatz 3 Monate Rollierend],
+    "6 Monate Rollierend", [€ Umsatz 6 Monate Rollierend],
+    "12 Monate Rollierend", [€ Umsatz 12 Monate Rollierend],
+    [€ Umsatz]  -- Standardmäßig Monatsansicht, falls nichts ausgewählt
+)
+
+€ Umsatz 12 Monate Rollierend = 
+CALCULATE(
+    [€ Umsatz],
+    DATESINPERIOD('Date'[Date], MAX('Date'[Date]), -12, MONTH)
+)
+
+€ Umsatz 3 Monate Rollierend = 
+CALCULATE(
+    [€ Umsatz],
+    DATESINPERIOD('Date'[Date], MAX('Date'[Date]), -3, MONTH)
+)
+
+€ Umsatz 6 Monate Rollierend = 
+CALCULATE(
+    [€ Umsatz],
+    DATESINPERIOD('Date'[Date], MAX('Date'[Date]), -6, MONTH)
+)
+
+€ Wachstum Vorjahr = 
+VAR AktuellesJahr = MAX('Date'[Year])
+VAR AktuellerUmsatz = CALCULATE(SUM('public sweets_data'[to]), 'Date'[Year] = AktuellesJahr)
+VAR VorjahrUmsatz = CALCULATE(SUM('public sweets_data'[to]), 'Date'[Year] = AktuellesJahr - 1)
+RETURN
+IF(
+    ISBLANK(AktuellerUmsatz) || ISBLANK(VorjahrUmsatz), 
+    BLANK(), 
+    AktuellerUmsatz - VorjahrUmsatz
+)
